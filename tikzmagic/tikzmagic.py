@@ -7,8 +7,9 @@ import tempfile
 from argparse import ArgumentParser
 from base64 import b64encode
 from os.path import isfile
+from os import getcwd
 
-from IPython.core.magic import register_cell_magic
+from IPython.core.magic import register_line_cell_magic
 from IPython.core.display import Image
 
 LATEX_TEMPLATE = r'''
@@ -22,18 +23,23 @@ LATEX_TEMPLATE = r'''
     \end{{tikzpicture}}
     \end{{document}}'''
 
-@register_cell_magic
-def tikz(line, cell):
+@register_line_cell_magic
+def tikz(line, cell=''):
     '''Format TikZ commands into a LaTeX document, compile, and convert.'''
     parser = ArgumentParser()
     parser.add_argument('-p', '--latex_packages', default='')
     parser.add_argument('-x', '--latex_preamble', default='')
     parser.add_argument('-l', '--tikz_libraries', default='')
+    parser.add_argument('-i', '--input_file', default=None)
     parser.add_argument('-s', '--scale', default=1, type=float)
     parser.add_argument('-b', '--border', default=4)
     args = parser.parse_args(shlex.split(line))
 
     # prepare latex from template
+    if args.input_file:
+        # add content from input_file before rest of cell
+        cell += r'\input{{{cwd}/{input_file}}}'.format(cwd=getcwd(), input_file=args.input_file)
+
     latex = LATEX_TEMPLATE.format(content=cell, border=args.border, latex_pre=args.latex_preamble,
                                   latex_pkgs=args.latex_packages, tikz_libs=args.tikz_libraries)
 
