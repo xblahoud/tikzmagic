@@ -21,6 +21,7 @@ In an iPython notebook cell: `import tikzmagic` or `%load_ext tikzmagic`.
 - `-p` or `--latex_packages`
 - `-x` or `--latex_preamble`
 - `-l` or `--tikz_libraries`
+- `-i` or `--input_file`
 - `-s` or `--scale`, default=1 (corresponding to 300dpi)
 - `-b` or `--border`, default=4
 
