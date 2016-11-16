@@ -1,3 +1,5 @@
+\begin{tikzpicture}
 \node[fill=gray] at (0,0) (a) {File};
 \node[fill=purple] at (2,0) (b) {Notebook};
 \draw[->] (a) -- (b);
+\end{tikzpicture}

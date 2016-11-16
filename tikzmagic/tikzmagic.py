@@ -34,6 +34,9 @@ def tikz(line, cell=''):
     parser.add_argument('-e', '--export_file', default=None)
     parser.add_argument('-s', '--scale', default=1, type=float)
     parser.add_argument('-b', '--border', default=4)
+    parser.add_argument('--wrap', dest='wrap_env', action='store_true')
+    parser.add_argument('--no-wrap', dest='wrap_env', action='store_false')
+    parser.set_defaults(wrap_env=True)
     args = parser.parse_args(shlex.split(line))
 
     # prepare latex from template
@@ -41,8 +44,14 @@ def tikz(line, cell=''):
         # add content from input_file before rest of cell
         cell += r'\input{{{cwd}/{input_file}}}'.format(cwd=getcwd(), input_file=args.input_file)
 
-    latex = LATEX_TEMPLATE.format(content=cell, border=args.border, latex_pre=args.latex_preamble,
-                                  latex_pkgs=args.latex_packages, tikz_libs=args.tikz_libraries)
+    if args.wrap_env:
+        cell = r'\begin{tikzpicture}' + cell + r'\end{tikzpicture}'
+
+    latex = LATEX_TEMPLATE.format(content=cell,
+                                  border=args.border,
+                                  latex_pre=args.latex_preamble,
+                                  latex_pkgs=args.latex_packages,
+                                  tikz_libs=args.tikz_libraries)
 
     # add current working directory to any export_file path
     if args.export_file:
