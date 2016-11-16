@@ -31,6 +31,7 @@ def tikz(line, cell=''):
     parser.add_argument('-x', '--latex_preamble', default='')
     parser.add_argument('-l', '--tikz_libraries', default='')
     parser.add_argument('-i', '--input_file', default=None)
+    parser.add_argument('-e', '--export_file', default=None)
     parser.add_argument('-s', '--scale', default=1, type=float)
     parser.add_argument('-b', '--border', default=4)
     args = parser.parse_args(shlex.split(line))
@@ -43,10 +44,14 @@ def tikz(line, cell=''):
     latex = LATEX_TEMPLATE.format(content=cell, border=args.border, latex_pre=args.latex_preamble,
                                   latex_pkgs=args.latex_packages, tikz_libs=args.tikz_libraries)
 
-    # compile and convert, returning Image data
-    return latex2image(latex, density=int(args.scale*300))
+    # add current working directory to any export_file path
+    if args.export_file:
+        args.export_file = getcwd() + '/' + args.export_file
 
-def latex2image(latex, density):
+    # compile and convert, returning Image data
+    return latex2image(latex, int(args.scale*300), args.export_file)
+
+def latex2image(latex, density, export_file=None):
     '''Compile LaTeX to PDF, and convert to PNG.'''
     try:
         # make a temp directory, and name temp files
@@ -60,6 +65,9 @@ def latex2image(latex, density):
 
         if not isfile(temp_pdf):
             raise Exception('pdflatex did not produce a PDF file.')
+
+        if export_file:
+            shutil.copyfile(temp_pdf, export_file)
 
         sh_convert(in_file=temp_pdf, out_file=temp_png, density=density) # convert PDF to PNG
 
