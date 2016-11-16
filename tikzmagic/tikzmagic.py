@@ -37,6 +37,8 @@ def tikz(line, cell=''):
     parser.add_argument('--wrap', dest='wrap_env', action='store_true')
     parser.add_argument('--no-wrap', dest='wrap_env', action='store_false')
     parser.set_defaults(wrap_env=True)
+    parser.add_argument('--debug', dest='debug_mode', action='store_true')
+    parser.set_defaults(debug_mode=False)
     args = parser.parse_args(shlex.split(line))
 
     # prepare latex from template
@@ -52,6 +54,9 @@ def tikz(line, cell=''):
                                   latex_pre=args.latex_preamble,
                                   latex_pkgs=args.latex_packages,
                                   tikz_libs=args.tikz_libraries)
+
+    if args.debug_mode:
+        print(latex)
 
     # add current working directory to any export_file path
     if args.export_file:
