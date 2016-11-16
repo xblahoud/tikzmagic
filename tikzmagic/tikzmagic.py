@@ -1,4 +1,5 @@
-'''A Jupyter extension for compiling and displaying images described by the TikZ language.'''
+'''A Jupyter extension for compiling and displaying images described by the
+   TikZ language.'''
 
 import subprocess
 import shlex
@@ -13,15 +14,13 @@ from IPython.core.magic import register_line_cell_magic
 from IPython.core.display import Image
 
 LATEX_TEMPLATE = r'''
-    \documentclass[tikz,border={border}]{{standalone}}
-    \usepackage{{tikz,{latex_pkgs}}}
-    \usetikzlibrary{{{tikz_libs}}}
-    {latex_pre}
-    \begin{{document}}
-    \begin{{tikzpicture}}
-    {content}
-    \end{{tikzpicture}}
-    \end{{document}}'''
+\documentclass[tikz,border={border}]{{standalone}}
+\usepackage{{tikz,{latex_pkgs}}}
+\usetikzlibrary{{{tikz_libs}}}
+{latex_pre}
+\begin{{document}}
+{content}
+\end{{document}}'''
 
 @register_line_cell_magic
 def tikz(line, cell=''):
@@ -44,7 +43,8 @@ def tikz(line, cell=''):
     # prepare latex from template
     if args.input_file:
         # add content from input_file before rest of cell
-        cell += r'\input{{{cwd}/{input_file}}}'.format(cwd=getcwd(), input_file=args.input_file)
+        cell += r'\input{{{cwd}/{file}}}'.format(cwd=getcwd(),
+                                                 file=args.input_file)
 
     if args.wrap_env:
         cell = r'\begin{tikzpicture}' + cell + r'\end{tikzpicture}'
@@ -75,7 +75,8 @@ def latex2image(latex, density, export_file=None):
         temp_png = temp_dir + '/tikzfile.png'
 
         open(temp_tex, 'w').write(latex)
-        sh_latex(in_file=temp_tex, out_dir=temp_dir) # run LaTeX to generate a PDF
+        # run LaTeX to generate a PDF
+        sh_latex(in_file=temp_tex, out_dir=temp_dir)
 
         if not isfile(temp_pdf):
             raise Exception('pdflatex did not produce a PDF file.')
@@ -83,11 +84,13 @@ def latex2image(latex, density, export_file=None):
         if export_file:
             shutil.copyfile(temp_pdf, export_file)
 
-        sh_convert(in_file=temp_pdf, out_file=temp_png, density=density) # convert PDF to PNG
+         # convert PDF to PNG
+        sh_convert(in_file=temp_pdf, out_file=temp_png, density=density)
 
         return Image(data=b64encode(open(temp_png, "rb").read()))
     finally:
-        shutil.rmtree(temp_dir) # remove temp directory
+        # remove temp directory
+        shutil.rmtree(temp_dir)
 
 # functions to run command line scripts
 def sh_latex(in_file, out_dir):
