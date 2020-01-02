@@ -5,7 +5,7 @@ A Jupyter extension for compiling and displaying images described by the [TikZ](
 ## Requirements
 
 - IPython/Jupyter
-- LaTeX (`xelatex`)
+- LaTeX distribution in your path
 - ImageMagick
 
 ## Installation
@@ -24,6 +24,7 @@ In an iPython notebook cell: `import tikzmagic` or `%load_ext tikzmagic`.
 - `-i` or `--input_file`
 - `-s` or `--scale`, default=1 (corresponding to 300dpi)
 - `-b` or `--border`, default=4
+- `--engine`, path to LaTeX engine to run, default `xelatex`
 
 ## Example
 

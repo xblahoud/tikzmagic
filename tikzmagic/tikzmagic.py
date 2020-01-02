@@ -33,6 +33,7 @@ def tikz(line, cell=''):
     parser.add_argument('-e', '--export_file', default=None)
     parser.add_argument('-s', '--scale', default=1, type=float)
     parser.add_argument('-b', '--border', default=4)
+    parser.add_argument('--engine', default='xelatex')
     parser.add_argument('--wrap', dest='wrap_env', action='store_true')
     parser.add_argument('--no-wrap', dest='wrap_env', action='store_false')
     parser.set_defaults(wrap_env=True)
@@ -63,9 +64,10 @@ def tikz(line, cell=''):
         args.export_file = getcwd() + '/' + args.export_file
 
     # compile and convert, returning Image data
-    return latex2image(latex, int(args.scale*300), args.export_file)
+    return latex2image(latex, int(args.scale*300), args.export_file, args.engine)
 
-def latex2image(latex, density, export_file=None):
+
+def latex2image(latex, density, export_file=None, engine='xelatex'):
     '''Compile LaTeX to PDF, and convert to PNG.'''
     try:
         # make a temp directory, and name temp files
@@ -76,10 +78,10 @@ def latex2image(latex, density, export_file=None):
 
         open(temp_tex, 'w').write(latex)
         # run LaTeX to generate a PDF
-        sh_latex(in_file=temp_tex, out_dir=temp_dir)
+        sh_latex(in_file=temp_tex, out_dir=temp_dir, engine=engine)
 
         if not isfile(temp_pdf):
-            raise Exception('pdflatex did not produce a PDF file.')
+            raise Exception(f'{engine} did not produce a PDF file.')
 
         if export_file:
             shutil.copyfile(temp_pdf, export_file)
@@ -92,10 +94,11 @@ def latex2image(latex, density, export_file=None):
         # remove temp directory
         shutil.rmtree(temp_dir)
 
+
 # functions to run command line scripts
-def sh_latex(in_file, out_dir):
+def sh_latex(in_file, out_dir, engine='xelatex'):
     '''Compile XeLaTeX to generate a PDF.'''
-    subprocess.call(['xelatex', '-output-directory', out_dir, in_file])
+    subprocess.call([engine, '-output-directory', out_dir, in_file])
 
 def sh_convert(in_file, out_file, density=96):
     '''Use ImageMagick to convert PDF to PNG.'''
