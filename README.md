@@ -7,6 +7,7 @@ A Jupyter extension for compiling and displaying images described by the [TikZ](
 - IPython/Jupyter
 - LaTeX distribution in your path
 - ImageMagick
+- [Wand library](http://docs.wand-py.org/)
 
 ## Installation
 

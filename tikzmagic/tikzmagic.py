@@ -13,6 +13,8 @@ from os import getcwd
 from IPython.core.magic import register_line_cell_magic
 from IPython.core.display import Image
 
+from wand.image import Image as wimage
+
 LATEX_TEMPLATE = r'''
 \documentclass[tikz,border={border}]{{standalone}}
 \usepackage{{tikz,{latex_pkgs}}}
@@ -64,17 +66,16 @@ def tikz(line, cell=''):
         args.export_file = getcwd() + '/' + args.export_file
 
     # compile and convert, returning Image data
-    return latex2image(latex, int(args.scale*300), args.export_file, args.engine)
+    return latex2image(latex, args.scale, args.export_file, args.engine)
 
 
-def latex2image(latex, density, export_file=None, engine='xelatex'):
+def latex2image(latex, scale=1, export_file=None, engine='xelatex'):
     '''Compile LaTeX to PDF, and convert to PNG.'''
     try:
         # make a temp directory, and name temp files
         temp_dir = tempfile.mkdtemp()
         temp_tex = temp_dir + '/tikzfile.tex'
         temp_pdf = temp_dir + '/tikzfile.pdf'
-        temp_png = temp_dir + '/tikzfile.png'
 
         open(temp_tex, 'w').write(latex)
         # run LaTeX to generate a PDF
@@ -86,10 +87,8 @@ def latex2image(latex, density, export_file=None, engine='xelatex'):
         if export_file:
             shutil.copyfile(temp_pdf, export_file)
 
-         # convert PDF to PNG
-        sh_convert(in_file=temp_pdf, out_file=temp_png, density=density)
+        return wimage(filename=temp_pdf, resolution=int(300*scale))
 
-        return Image(data=b64encode(open(temp_png, "rb").read()))
     finally:
         # remove temp directory
         shutil.rmtree(temp_dir)
@@ -100,9 +99,6 @@ def sh_latex(in_file, out_dir, engine='xelatex'):
     '''Compile XeLaTeX to generate a PDF.'''
     subprocess.call([engine, '-output-directory', out_dir, in_file])
 
-def sh_convert(in_file, out_file, density=96):
-    '''Use ImageMagick to convert PDF to PNG.'''
-    subprocess.call(['convert', '-density', str(density), in_file, out_file])
 
 def load_ipython_extension(ipython):
     '''Load iPython extension. Empty as we don't need to do anything.'''

@@ -5,7 +5,7 @@ setup(
     version="1.0.5dev",
 
     packages=find_packages(),
-    install_requires=['IPython'],
+    install_requires=['IPython','wand'],
 
     description='''
         A Jupyter extension for compiling and displaying images described by the TikZ language.
