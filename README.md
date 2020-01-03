@@ -26,6 +26,7 @@ In an iPython notebook cell: `import tikzmagic` or `%load_ext tikzmagic`.
 - `-s` or `--scale`, default=1 (corresponding to 300dpi)
 - `-b` or `--border`, default=4
 - `--engine`, path to LaTeX engine to run, default `xelatex`
+- `--log` prints engines log on latex error
 
 ## Example
 

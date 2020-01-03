@@ -40,6 +40,7 @@ def tikz(line, cell=''):
     parser.add_argument('--no-wrap', dest='wrap_env', action='store_false')
     parser.set_defaults(wrap_env=True)
     parser.add_argument('--debug', dest='debug_mode', action='store_true')
+    parser.add_argument('--log', default=False, action='store_true')
     parser.set_defaults(debug_mode=False)
     args = parser.parse_args(shlex.split(line))
 
@@ -66,10 +67,10 @@ def tikz(line, cell=''):
         args.export_file = getcwd() + '/' + args.export_file
 
     # compile and convert, returning Image data
-    return latex2image(latex, args.scale, args.export_file, args.engine)
+    return latex2image(latex, args.scale, args.export_file, args.engine, args.log)
 
 
-def latex2image(latex, scale=1, export_file=None, engine='xelatex'):
+def latex2image(latex, scale=1, export_file=None, engine='xelatex', log=False):
     '''Compile LaTeX to PDF, and convert to PNG.'''
     try:
         # make a temp directory, and name temp files
@@ -82,6 +83,8 @@ def latex2image(latex, scale=1, export_file=None, engine='xelatex'):
         sh_latex(in_file=temp_tex, out_dir=temp_dir, engine=engine)
 
         if not isfile(temp_pdf):
+            if log:
+                print(open(f"{temp_dir}/tikzfile.log").read())
             raise Exception(f'{engine} did not produce a PDF file.')
 
         if export_file:
