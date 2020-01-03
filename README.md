@@ -14,9 +14,12 @@ Fork of [github.com/robjstan/tikzmagic](https://github.com/robjstan/tikzmagic).
 
 ```pip install git+git://github.com/xblahoud/tikzmagic.git```
 
+You might require to [change priviliges to convert PDF](https://stackoverflow.com/questions/52998331/imagemagick-security-policy-pdf-blocking-conversion) for ImageMagick
+
 ## Usage
 
 In an iPython notebook cell: `import tikzmagic` or `%load_ext tikzmagic`.
+You can also call function `tikmagic.tikz()`
 
 ## Optional arguments
 
