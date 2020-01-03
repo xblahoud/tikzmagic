@@ -1,6 +1,7 @@
 # tikzmagic
 
 A Jupyter extension for compiling and displaying images described by the [TikZ](http://www.texample.net/tikz/) language.
+Fork of [github.com/robjstan/tikzmagic](https://github.com/robjstan/tikzmagic).
 
 ## Requirements
 
@@ -11,7 +12,7 @@ A Jupyter extension for compiling and displaying images described by the [TikZ](
 
 ## Installation
 
-```pip install git+git://github.com/robjstan/tikzmagic.git```
+```pip install git+git://github.com/xblahoud/tikzmagic.git```
 
 ## Usage
 
